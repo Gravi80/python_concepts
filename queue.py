@@ -1,3 +1,0 @@
-# Queues
-# LIFO, FIFO, Priority
-

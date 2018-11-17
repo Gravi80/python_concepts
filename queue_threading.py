@@ -21,3 +21,80 @@ print(q.get())
 print('First item gotten')  # queue is empty
 print(q.get())
 print('Finished')
+
+# Queue Worker Thread example
+task_queue = queue.Queue()
+worker_count = 2
+workers_list = []
+
+
+def worker():
+    while True:
+        print(f"Waiting for Task...{threading.get_ident()}\n")
+        task = task_queue.get()
+        print(f"Task Received...{threading.get_ident()}---{task}")
+        if task is None:
+            task_queue.task_done()  # marks tasks as complete.
+            print(f"Stopping...{threading.get_ident()}")
+            break
+        do_work(task)
+        task_queue.task_done()
+
+
+def do_work(task):
+    print(f"Processing Task.......{threading.get_ident()}--{task}")
+    time.sleep(2)
+    print(f"Task Completed.......{threading.get_ident()}--{task}")
+
+
+for number in range(worker_count):
+    wt = threading.Thread(target=worker)
+    workers_list.append(wt)
+    wt.start()
+
+print("############## Add tasks to the queue ##############")
+for task in ['task1', 'task2', 'task3']:
+    task_queue.put(task)
+
+print("############## Stop All Workers ##############")
+for i in range(worker_count):
+    task_queue.put(None)
+
+print("############## Running Threads ##############")
+threading.enumerate()
+
+task_queue.join()  # block until all tasks are done [task_done() call was received for every item]
+
+print("\n\n######################### Another Example ###############")
+
+print_lock = threading.Lock()
+new_queue = queue.Queue()
+
+
+def example_job(worker):
+    time.sleep(0.5)
+
+    with print_lock:
+        print(threading.current_thread().name, worker)
+
+
+def threader():
+    while True:
+        worker = new_queue.get()
+        example_job(worker)
+        new_queue.task_done()
+
+
+for x in range(10):
+    t = threading.Thread(target=threader)
+    t.daemon = True
+    t.start()
+
+start = time.time()
+
+for worker in range(20):
+    new_queue.put(worker)
+
+new_queue.join()
+
+print("Entire Job took:", time.time() - start)

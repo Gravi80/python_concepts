@@ -27,6 +27,9 @@ for number in range(5):
     th.start()
     print(f'{th.name} has started')
 
+print(f'active_count={threading.active_count()}')
+print(f'current_thread={threading.current_thread()}')
+print(f'thread enumerate={threading.enumerate()}')
 # All 5 threads ends before continuing Main thread i.e Block Main thread until all above threads complete
 for t in thread_list:
     t.join()

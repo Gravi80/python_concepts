@@ -117,3 +117,11 @@ class Derived(Base):
 
 
 # https://www.youtube.com/watch?v=Vjx9okHzaiM
+
+
+print("\n\n######################__init_subclass__###############################")
+# how to let the parent know when it is being subclassed (__init_subclass__)
+# how to let a descriptor class know the name of the property it is used for (__set_name__)
+
+
+

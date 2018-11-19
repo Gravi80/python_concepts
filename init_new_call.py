@@ -11,5 +11,11 @@ class Demo:
         print("call")
 
 
-demo=Demo()
+demo = Demo()
 demo()
+
+# 1).new
+# 2).init
+# 3).call
+
+print(callable(demo))

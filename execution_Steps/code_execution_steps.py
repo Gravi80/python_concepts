@@ -11,9 +11,7 @@ from os import path
 with open(f'{path.dirname(__file__)}/my_module.py') as f:
     source = f.read()
 print(f"source={source!r}")
-import os
-import stat
-import sys
+
 # Step 2
 # Parse source and create AST
 from ast import parse

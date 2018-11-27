@@ -4,11 +4,11 @@
 # Another Thread putting something into a queue
 # If there is nothing in the Queue, one Thread is waiting
 
-import threading
+import threading_queue
 import time
 from random import randint
 
-event = threading.Event()
+event = threading_queue.Event()
 # event object manages an internal flag that can be
 # set to True with "set" method
 # reset to False with "clear" method
@@ -42,9 +42,9 @@ def start_operation():
     print("Event is cleared. Stopping operation")
 
 
-event = threading.Event()
-th1 = threading.Thread(target=flag)
-th2 = threading.Thread(target=start_operation)
+event = threading_queue.Event()
+th1 = threading_queue.Thread(target=flag)
+th2 = threading_queue.Thread(target=start_operation)
 
 th1.start()
 th2.start()

@@ -105,7 +105,7 @@ except ValueError:
 # Called at the time the owning class owner is created. The descriptor has been assigned to name.
 
 class NonNegative:
-    def __get__(self, instance, owner):
+    def __get__(self, instance, owner): # Instance of the Order class, owner is the Order class
         return instance.__dict__[self.name]
 
     def __set__(self, instance, value):

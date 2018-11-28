@@ -73,7 +73,7 @@ class NonNegative:
             raise ValueError('Cannot be negative.')
         instance.__dict__[self.name] = value
 
-
+# The main thing to remember is that descriptors are linked to classes and not to instances.
 class Order:
     price = NonNegative('price')  # Similar to SQLAlchemy
     quantity = NonNegative('quantity')
@@ -86,6 +86,10 @@ class Order:
     def total(self):
         return self.price * self.quantity
 
+# when we go to set price/quantity, Python notices that it is a descriptor.
+# Python knows that price/quantity is a descriptor because we defined it as such when we created it as a class attribute.
+# So when we go to set price/quantity, we actually call our descriptor’s __set__ method which
+# passes in the instance and the value that we are trying to set.
 
 apple_order = Order('apple', 1, 10)
 apple_order.total()

@@ -1,4 +1,5 @@
 # https://dev.to/dawranliou/writing-descriptors-in-python-36
+# https://developer.ibm.com/tutorials/os-pythondescriptors/
 
 # A descriptor is an object attribute with “binding behavior”,
 # one whose attribute access has been overridden by methods in the descriptor protocol.

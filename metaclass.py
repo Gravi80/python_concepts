@@ -110,6 +110,7 @@ class Derived(Base):
     def bar(self):
         print("some")
 
+
 # In meta class if you want to control the initialisation of the class : __new__
 # Modify the class by modifying some class attribute : Override __new__
 # Check something after initialisation : __init__
@@ -120,8 +121,19 @@ class Derived(Base):
 
 
 print("\n\n######################__init_subclass__###############################")
+
+
 # how to let the parent know when it is being subclassed (__init_subclass__)
 # how to let a descriptor class know the name of the property it is used for (__set_name__)
+class PEP487:
+    def __init_subclass__(cls, whom, **kwargs):  # This method is called whenever the containing class is subclassed.
+        # cls is then the new subclass.
+        super().__init_subclass__(**kwargs)
+        cls.hello = lambda: print(f"Hello,{whom}")
 
 
+class HelloWorld(PEP487, whom="World"):
+    pass
 
+
+HelloWorld.hello()

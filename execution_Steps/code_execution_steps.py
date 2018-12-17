@@ -1,80 +1,73 @@
-print("\n########################## Code Execution ##########################")
-from builtins import open
+# When python reads the source code, it first converts it to a stream of tokens
+# python -m tokenize execution_Steps/my_module.py
+import ast
+import dis
+import tokenize
 from os import path
 
-# When you say "import my_module".
-# Python goes and finds my_module.py Or
-# finds a folder containing __init__.py which contains my_module.py
+import astpretty
 
-# Step 1
-# Read the file
+# Step 1: Tokenization  [Lexical]
+with open(f'{path.dirname(__file__)}/my_module.py', 'rb') as f:
+    for token in tokenize.tokenize(f.readline):
+        print(token)
+# OP : Operator
+# INDENT, DEDENT : For Indentation
+# start=(line, character), end=(line, character)
+
+# Step 2: Turn the stream of tokens in to AST (Parse the tokens) [Parsing]
+# AST : Abstract syntax tree is a representation of what will actually happen in a program
+astpretty.pprint(ast.parse("1+2+3"), show_offsets=False)
+astpretty.pprint(ast.parse("(1+2)+3"), show_offsets=False)
+# The brackets around 1 and 2 are not represented in the AST. So the syntax is being extracted away
+# We can't go back from the AST to the exact source code
+# colon, white-space, tabs, brackets are abstracted
+
+# ast module parse the Text and hadles tokenisation in one step
 with open(f'{path.dirname(__file__)}/my_module.py') as f:
-    source = f.read()
-print(f"source={source!r}")
+    tree = ast.parse(f.read())
+print(tree)
+print(tree._fields)
+for node in tree.body:
+    print(node.lineno, node)
 
-# Step 2
-# Parse source and create AST
-from ast import parse
+print(ast.dump(tree))
+astpretty.pprint(tree, show_offsets=False)
 
-ast = parse(source)  # Tokenises the source code and turns it into AST(abstract syntax tree)
-print(f'tokens={ast!r}')
-print(ast.body)  # has function and class definition
-print(ast.body[0].body)  # body of function definition
-print(ast.body[0].body[0].value)  # value that func returns, Binary operation
-print(ast.body[0].body[0].value.left.id)  # Left side of binary openration is a Name=num1
-print(ast.body[0].body[0].value.right.id)  # Right side of binary openration is a Name=num2
+# Step 3: Compile the AST to bytecode [code-object]
+filename = path.abspath('my_module.py')
+print(filename)
+code = compile(tree, filename=filename, mode='exec')
+# filename : To tag the code-object to know that this is where it is coming from. Backtrace can use these info
+print(code)
+print(dis.code_info(code))
+# A tuple of constants. All constants are put in a tuple and are referred by an index
+# Names : Tuple containing Names of the variable
 
-# Step 3
-# Compile AST and construct code object
-code = compile(ast, 'my_module.py', mode='exec')
-print(f'code={code!r}')
-print(code.co_code)  # Actual byte code
-print(code.co_name)  # Name of function
-print(code.co_names)  # Name of local vars
-print(code.co_nlocals)  # Number of local vars
-# from dis import dis
-# dis(code)
+# dis module hides few more attributes from us
+for attr_name in dir(code):
+    if not attr_name.startswith('__'):
+        print(f'{attr_name}: {getattr(code,attr_name)}')
+# co_code : Actual instructions that python will execute as code runs
+# co_lnotab : Mapping of bytecode to line numbers
+print(list(b for b in code.co_code))
+print(dis.dis(code))
+# python -m dis execution_Steps/my_module.py
+print(dis.code_info(code.co_consts[2]))
 
-# Step 4
-# Executes the code object and create a namespace
-namespace = {}  # creates a namespace
-exec(code, namespace)
-print(f'namespace={namespace.keys()}')
+# Step 4: Parsing is an expensive operation python will save/cache this. So, that next time when
+# same module is loaded it doesn't have to parse it again [Serialization]
+import marshal  # specially design for python code objects and can only serialize immutable types(Tuples, Numbers)
 
+marshelled = marshal.dumps(code)
+print(marshal.loads(marshelled))
+print(list(marshelled))
+# python put this marshelled/serialized code object in a .pyc file along with a header(first 16 bytes) for validating cache
+# In .pyc file the first 4 bytes are the magic numbers. Same for every python version
+# This tells python that this is the .pyc file for this particular version of the byte-code
+import importlib.util
 
-# Step 5
-# Using namespace construct the module
-# Module is an python object having name, lookup mechanism, ability to lookup contents inside
-class mod:
-    def __init__(self, name, bases, body):
-        self.name, self.base = name, bases
-        self.__dict__.update(body)
-
-
-my_module = mod('my_module', (), namespace)
-print(f'module={dir(my_module)!r}')
-print(my_module.Demo)
-print(my_module.add)
-
-# Step 6
-# Use module
-
-print(my_module.add(2, 3))
-
-print("\n########################## Class Construction ##########################")
-# Step 1
-body = '''def __init__(self,name):
-    self.name = name
-def bar(self):
-    print(f"I am {self.name}")'''
-
-# Step 2, create an empty class dictionary
-clsdict = type.__prepare__('ClassName', (object,))
-print(clsdict)
-# Step 3, clsdict is populated with the body methods and attributes
-exec(body, globals(), clsdict)
-print(clsdict)
-# Step 4, Class is constructed
-ClassName = type('ClassName', (object,), clsdict)
-cn = ClassName('some_name')
-cn.bar()
+print(importlib.util.MAGIC_NUMBER)
+print(list(importlib.util.MAGIC_NUMBER))
+# Step 4: A code object is something that python can run
+# exec(code)

@@ -137,3 +137,31 @@ class HelloWorld(PEP487, whom="World"):
 
 
 HelloWorld.hello()
+
+print("\n\n######################__prepare__###############################")
+
+
+# Allowing a custom namespace[class method/variable] to be used when creating classes.
+class Wrapper(type):
+    def wrapper(func):
+        def wrapped_func(*args, **kwargs):
+            print("*****started wrapped****")
+            res = func(*args, **kwargs)
+            print("*****finished wrapped****")
+            return res
+
+        return wrapped_func
+
+    @classmethod
+    def __prepare__(metacls, name, bases, **kwargs):
+        return {"wrap": metacls.wrapper, "num1": 10}
+
+
+class Foo(metaclass=Wrapper):
+
+    @wrap
+    def sum(self, num2):
+        return self.__class__.num1 + num2
+
+
+print(Foo().sum(2))

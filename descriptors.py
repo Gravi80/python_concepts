@@ -116,6 +116,7 @@ class NonNegative:
         return instance.__dict__[self.name]
 
     def __set__(self, instance, value):
+        print("In set ",instance,value)
         if value < 0:
             raise ValueError('Cannot be negative.')
         instance.__dict__[self.name] = value
@@ -138,10 +139,14 @@ class Order:
     def total(self):
         return self.price * self.quantity
 
+    # def __setattr__(self, key, value):
+    #     print("In setter",key,value)
+    #     self.__dict__[key] = value
+
 
 apple_order = Order('apple', 1, 10)
 apple_order.total()
-
+apple_order.price = 5
 try:
     apple_order.price = -10
 except ValueError:

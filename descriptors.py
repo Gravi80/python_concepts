@@ -122,6 +122,7 @@ class NonNegative:
 
     # Called automatically with the name of the attribute, on the LHS. [price,quantity]
     def __set_name__(self, owner, name):
+        print("__set_name__=", name)
         self.name = name
 
 
@@ -150,3 +151,8 @@ try:
     apple_order.quantity = -10
 except ValueError:
     print("Raised exeception")
+
+print("\n\n********Order.__dict__********")
+print(Order.__dict__)
+print("\n\n********apple_order.__dict__********")
+print(apple_order.__dict__)

@@ -37,3 +37,17 @@ math = sys.modules['math']
 ```
 
 **The execution of code happens as a side-effect only when python can't find a module in sys.modules**
+
+### Packaging/Project
+https://github.com/audreyr/cookiecutter
+
+https://pipenv.readthedocs.io/en/latest/
+
+https://pypi.org/classifiers/
+
+https://choosealicense.com/
+
+https://www.gitignore.io/
+
+https://pypi.org/project/check-manifest/
+

@@ -4,6 +4,17 @@ Based on Python 3.7
 conda create -n python_concepts python=3.7
 source activate python_concepts
 ```
+Or
+[choosing python version](https://github.com/pyenv/pyenv#choosing-the-python-version)
+```
+curl https://pyenv.run | bash
+pyenv install 3.7
+pyenv local 3.7
+pyenv versions
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirement.txt --index-url https://pypi.org/simple/
+```
 
 ### Python
 Compiler: https://github.com/python/cpython/blob/5f2df88b63e50d23914e97ec778861a52abdeaad/Python/compile.c

@@ -7,3 +7,5 @@ requests
 PyPDF2
 python-docx
 imapclient
+pyautogui
+

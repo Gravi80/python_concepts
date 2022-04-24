@@ -9,4 +9,6 @@ python-docx
 imapclient
 pyautogui
 python-dotenv
+requests
+aiohttp
 

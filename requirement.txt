@@ -4,11 +4,9 @@ pyre-check
 MonkeyType
 beautifulsoup4
 requests
-PyPDF2
 python-docx
 imapclient
 pyautogui
 python-dotenv
-requests
 aiohttp
 

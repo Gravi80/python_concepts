@@ -89,3 +89,9 @@ Bytecode Comparison:
 |      |                                                |      | 42 LOAD_CONST               0 (None)        |
 |      |                                                |      | 44 RETURN_VALUE                             |
 """
+
+# Digging into Bytecode Specialization with Specialist
+# pip install specialist
+# 1. If an addition is performed on two integers in a loop, that operation can be specialized (and would be colored green)
+# 2. If, however, the addition sees different types (maybe integers or floating-point types, depending on the iteration), then it’ll stay in an “adaptive” state, which is colored red.
+# specialist generators/basics_0.py
